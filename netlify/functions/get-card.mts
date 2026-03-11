@@ -5,8 +5,10 @@ export default async (req: Request, context: Context) => {
   try {
     const card = await findCardByID('sv3pt5-93');
     return new Response(JSON.stringify(card))
-  } catch {
-    return new Response('error')
+  } catch (err) {
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 500
+    });
   }
   // findCardByID('sv3pt5-93')
   //   .then((card: any) => {
