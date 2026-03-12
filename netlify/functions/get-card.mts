@@ -1,20 +1,25 @@
 import type { Context } from "@netlify/functions";
-import { findCardByID } from "pokemon-tcg-sdk-typescript/dist/services/cardService.js";
+
+const apiKey = process.env.POKEMONTCG_API_KEY ?? "";
 
 export default async (req: Request, context: Context) => {
   try {
-    const card = await findCardByID('sv3pt5-93');
-    return new Response(JSON.stringify(card))
+
+    const res = await fetch("https://api.pokemontcg.io/v2/cards/sv3pt5-93", {
+      headers: {
+        "X-Api-Key": apiKey
+      }
+    });
+
+    const data = await res.json();
+
+    return new Response(JSON.stringify(data), {
+      headers: { "Content-Type": "application/json" }
+    });
+
   } catch (err) {
     return new Response(JSON.stringify({ error: String(err) }), {
       status: 500
     });
   }
-  // findCardByID('sv3pt5-93')
-  //   .then((card: any) => {
-  //     return new Response(card.data.name)
-  //   })
-  //   .catch((error: any) => {
-  //     return new Response(error)
-  //   });
 }
