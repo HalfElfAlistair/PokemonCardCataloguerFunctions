@@ -2,6 +2,9 @@ import type { Context } from "@netlify/functions";
 import { fetchWithRetry } from "../../helpers.ts";
 import { getCache, setCache } from "../lib/cache";
 
+// temporary data for testing requests
+import { testingData } from "../../testingData.ts";
+
 
 export default async (req: Request, context: Context) => {
   const { name } = await req.json();
@@ -18,9 +21,20 @@ export default async (req: Request, context: Context) => {
       });
     }
 
-    const response = await fetchWithRetry(url, {});
+    // const response = await fetchWithRetry(url, {});
+    const { cards } = testingData;
+    let cardData = {};
+    for (const cardID in cards) {
+      const key = cardID as keyof typeof cards;
+      const cardName = cards[key]['name'];
+      if (cardName === name) {
+        cardData = cards[key];
+      }
+    }
+    const response = cardData;
 
-    const data = await response.json();
+    // const data = await response.json();
+    const data = response;
 
     // store data from request in cache
     setCache(name, data);
