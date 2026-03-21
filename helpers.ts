@@ -1,3 +1,4 @@
+// Retry function
 export const fetchWithRetry = async (url: string, options: RequestInit) => {
     for (let i = 0; i < 3; i++) {
         try {
