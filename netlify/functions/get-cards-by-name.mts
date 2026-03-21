@@ -1,6 +1,5 @@
 import type { Context } from "@netlify/functions";
 import { fetchWithRetry } from "../../helpers.ts";
-// import { getCache, setCache } from "../lib/cache.ts";
 import { getCache, setCache } from "../lib/cache";
 
 
@@ -19,13 +18,9 @@ export default async (req: Request, context: Context) => {
       });
     }
 
-    // working fetch
-    // const response = await fetchWithRetry(url, {});
-    // test response for testing caching
-    const response = { name: 'Haunter', type: 'ghost' };
+    const response = await fetchWithRetry(url, {});
 
-    // const data = await response.json();
-    const data = response;
+    const data = await response.json();
 
     // store data from request in cache
     setCache(name, data);
