@@ -5,8 +5,7 @@
     "pokemon-tcg-sdk-typescript": "^1.3.4"
   },
   "scripts": {
-    "build:functions": "cd netlify/functions && tsc --project tsconfig.json",
-    "build": "tsc -p netlify/functions"
+    "build": "echo 'No build step required'"
   },
   "devDependencies": {
     "@netlify/functions": "^5.1.5",
