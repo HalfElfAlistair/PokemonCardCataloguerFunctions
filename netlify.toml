@@ -3,3 +3,11 @@
   command = "npm run build"
 [dev]
   envFiles = [".env"]
+  functionsPort = 9999
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Authorization, Content-Type, x-auth-token"
+[functions]
+  directory = "netlify/functions"
