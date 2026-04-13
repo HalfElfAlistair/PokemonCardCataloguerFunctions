@@ -2,8 +2,7 @@ import type { HandlerEvent, HandlerContext } from "@netlify/functions";
 import { fetchWithRetry, responseObject } from './helpers/helpers';
 import { getCache } from "./cache/cache.js";
 import { admin } from "./firebase/firebaseAdmin";
-import type { Card, Cards } from "./types/dataTypes";
-import { fetchCardByID } from "./firebase/db";
+import type { Cards } from "./types/dataTypes";
 
 export const handler = async (event: HandlerEvent, context: HandlerContext) => {
   try {
@@ -67,14 +66,6 @@ export const handler = async (event: HandlerEvent, context: HandlerContext) => {
     for (const card of responseData) {
       const cardID: string = card['id'];
       data[cardID] = card;
-    }
-
-    for (const cardID in data) {
-      // checks db to see if card already present there, if so it will replace entry in received data
-      const cardFromFirebase = await fetchCardByID(verifiedUser.uid, cardID)
-      if (cardFromFirebase) {
-        data[cardID] = cardFromFirebase as Card;
-      }
     }
 
     return responseObject(200, ["allowOrigin", "allowHeaders", "allowMethods"], data)

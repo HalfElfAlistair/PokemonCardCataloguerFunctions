@@ -2,7 +2,6 @@ import type { HandlerEvent, HandlerContext } from "@netlify/functions";
 import { fetchWithRetry, responseObject } from './helpers/helpers';
 import { getCacheItem, setCache } from "./cache/cache.js";
 import { admin } from "./firebase/firebaseAdmin";
-import { fetchCardByID } from "./firebase/db";
 
 export const handler = async (event: HandlerEvent, context: HandlerContext) => {
 
@@ -42,17 +41,7 @@ export const handler = async (event: HandlerEvent, context: HandlerContext) => {
       return responseObject(200, ["allowOrigin", "allowHeaders", "allowMethods"], { [cardID]: cached })
     }
 
-    const { uid } = verifiedUser;
-
     let response;
-    // check db for card, if present return response with it
-    const cardFromFirebase = await fetchCardByID(uid, cardID);
-    if (cardFromFirebase) {
-      response = cardFromFirebase;
-      const data = await response.json();
-      setCache(cardID, cardFromFirebase);
-      return responseObject(200, ["allowOrigin", "allowHeaders", "allowMethods"], { [cardID]: data })
-    }
 
     // if card not already in db, search external API for it
     const url = `https://api.tcgdex.net/v2/en/cards/${cardID}`;
@@ -62,7 +51,11 @@ export const handler = async (event: HandlerEvent, context: HandlerContext) => {
       return responseObject(404, ["allowOrigin"], { message: "failed to find card", error })
     }
 
+
+
     const data = await response.json();
+
+    setCache(cardID, data);
 
     return responseObject(200, ["allowOrigin", "allowHeaders", "allowMethods"], data)
   } catch (error) {
